@@ -1,0 +1,22 @@
+<% include partials/_header.ejs %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+</head>
+<body>
+  <h3>Your Short URLs</h3>
+  <br><br>
+  <table>
+
+  <% for (item in urls) { %>
+    <tr>
+      <td><%= item %></td>
+      <td><%= urls[item] %></td>
+      <td> EDIT </td>
+      <td> DELETE </td>
+  <% } %>
+
+  </table>
+</body>
+</html>
