@@ -72,10 +72,24 @@ app.post('/urls/:id/delete', (req, res) => {
 
 // UPDATE
 app.post('/urls/:id', (req, res) => {
+
+  let error;
   let id = req.params.id;
   let longURL = req.body.longURL;
-  urlDatabase[id] = longURL;
-  res.redirect("/");
+
+  if (longURL) {
+    urlDatabase[id] = longURL;
+    res.redirect("/",);
+  }
+  else {
+    res.render('urls_show', {
+      username: req.cookies['username'],
+      shortURL: id,
+      longURL: longURL,
+      error: 'Please fill a long URL'
+    });
+  }
+
 });
 
 // LOGIN PAGE AND COOKIE SETUP
