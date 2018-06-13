@@ -1,12 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const funcs = require('./functions');
+var cookieParser = require('cookie-parser')
 
 const app = express();
 const port = 8080;
 
 app.set('view engine', 'ejs');
+
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 // Initial Database of our tinyApp
 const urlDatabase = {
@@ -21,7 +24,7 @@ app.get("/", (req, res) => {
 
 // URLs list
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = { username: req.cookies['username'], urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
@@ -32,12 +35,19 @@ app.get('/urls.json', (req,res) => {
 
 // Form to create a new shortlink based on a longLink
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = { username: req.cookies['username']};
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id] };
+
+  let templateVars = {
+    username: req.cookies['username'],
+    shortURL: req.params.id,
+    longURL: urlDatabase[req.params.id] };
+
   res.render("urls_show", templateVars);
+
 });
 
 app.get("/u/:shortURL", (req, res) => {
