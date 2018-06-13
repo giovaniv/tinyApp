@@ -1,33 +1,31 @@
 <% include partials/_header.ejs %>
 
-<h3>Your Short URLs</h3>
-<table width="100%" border=0>
+<p><a class="btn btn-info" href="http://localhost:8080/urls/new" role="button">New short Link</a><p>
 
-<tr>
-  <td colspan=2 align=center>Actions</td>
-  <td>&nbsp;</td>
-  <td width="10%">Short Link</td>
-  <td>Full URL</td>
-</tr>
+<h3>Our short Links</h3><p>
+
+<div class="row">
+  <div class="col-sm-2">Short Link</div>
+  <div class="col-sm-4">Full URL</div>
+  <div class="col-sm-2">Actions</div>
+</div>
 
 <% for (item in urls) { %>
-<tr>
-<td width="1%">
-  <form method=get action="/urls/<%= item %>">
-  <input type=submit value=edit>
-  </form>
-</td>
-<td width="1%">
-  <form method=post action="/urls/<%= item %>/delete">
-  <input type=submit value=delete>
-  </form>
-</td>
-<td>&nbsp;</td>
-<td><%= item %></td>
-<td><%= urls[item] %></td>
-</tr>
-<% } %>
+  <div class="row">
+    <div class="col-sm-2"><%= item %></div>
+    <div class="col-sm-4"><%= urls[item] %></div>
+    <div class="col-sm-2 p-1">
 
-</table>
+      <form method=get action="/urls/<%= item %>">
+        <input type=submit value=edit>
+        </form>
+
+      <form method=post action="/urls/<%= item %>/delete">
+      <input type=submit value=delete>
+      </form>
+
+    </div>
+  </div>
+<% } %>
 
 <% include partials/_footer.ejs %>

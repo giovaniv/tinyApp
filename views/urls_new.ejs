@@ -1,9 +1,16 @@
 <% include partials/_header.ejs %>
 
-  <form action="/urls" method="POST" style="margin:150px;">
+<p><a class="btn btn-info" href="http://localhost:8080" role="button">Back to List</a><p>
+
+<h3>Create a new short link</h3><p>
+
+<form action="/urls" method="POST">
+  <div class="form-group">
     <label for="longURL">Enter a URL:</label>
-    <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
-    <input type="submit" value="Submit">
-  </form>
+    <input type="text" class="form-control" name="longURL" id="longURL" aria-describedby="longURL" placeholder="http://">
+    <small id="longURL" class="form-text text-muted">This URL with be shorted when you Submit it</small>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
 
 <% include partials/_footer.ejs %>
