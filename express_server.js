@@ -35,7 +35,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id };
+  let templateVars = { shortURL: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render("urls_show", templateVars);
 });
 
@@ -67,8 +67,9 @@ app.post('/urls/:id/delete', (req, res) => {
 // UPDATE
 app.post('/urls/:id', (req, res) => {
   var id = req.params.id;
-  urlDatabase[shortLink] = req.body.longURL;
-  res.redirect("/urls");
+  var longURL = req.body.longURL;
+  urlDatabase[id] = longURL;
+  res.redirect("/");
 });
 
 app.listen(port, () => {
