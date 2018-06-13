@@ -14,28 +14,23 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-// function generateRandomString(m) {
-//   s = '';
-//   r = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-//   for (var i=0; i < m; i++) {
-//     s += r.charAt(Math.floor(Math.random() * r.length));
-//   }
-//   return s;
-// }
-
+// Root of our TinyApp, until now just redirecting to the URL List
 app.get("/", (req, res) => {
   res.redirect("/urls");
 });
 
-app.get('/urls.json', (req,res) => {
-  res.json(urlDatabase);
-});
-
+// URLs list
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
+// Path to show our Database in JSON format
+app.get('/urls.json', (req,res) => {
+  res.json(urlDatabase);
+});
+
+// Form to create a new shortlink based on a longLink
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
@@ -73,6 +68,7 @@ app.post('/urls/:id', (req, res) => {
   res.redirect("/");
 });
 
+// Listener to our tinyApp
 app.listen(port, () => {
   console.log(`Giovani's TinyApp listening on port ${port}!`);
 });
