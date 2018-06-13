@@ -57,10 +57,22 @@ app.get("/u/:shortURL", (req, res) => {
 
 // REDIRECT TO THE ORIGINAL URL (THAT WAS NOT SHORTED)
 app.post('/urls', (req, res) => {
+
+  let error;
   let shortLink = funcs.generateRandomString(6);
-  urlDatabase[shortLink] = req.body.longURL;
-  let shortUrl = '/u/'+shortLink;
-  res.redirect(shortUrl);
+
+  if (req.body.longURL) {
+    urlDatabase[shortLink] = req.body.longURL;
+    let shortUrl = '/u/'+shortLink;
+    res.redirect(shortUrl);
+  }
+  else {
+    res.render('urls_new', {
+      username: req.cookies['username'],
+      error: 'Please fill a long URL'
+    });
+  }
+
 });
 
 // DELETE

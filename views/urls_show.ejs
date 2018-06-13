@@ -1,10 +1,8 @@
 <% include partials/_header.ejs %>
 
-<h3><%= shortURL %></h3>
+<p><a class="btn btn-info" href="http://localhost:8080" role="button">Back to List</a><p>
 
-<% if (locals.error) { %>
-  <p class="alert alert-danger"><%= error %></p>
-<% } %>
+<h3><%= shortURL %></h3>
 
 <form action="/urls/<%= shortURL %>" method="POST" style="margin:150px;">
   <input id="longURL" type="text" name="longURL" value="<%= longURL %>" style="width: 300px">
