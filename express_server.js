@@ -57,7 +57,7 @@ app.post('/urls', (req, res) => {
 app.post('/urls/:id/delete', (req, res) => {
   let id = req.params.id;
   delete urlDatabase[id];
-  res.redirect("/urls");
+  res.redirect("/");
 });
 
 // UPDATE
@@ -65,6 +65,13 @@ app.post('/urls/:id', (req, res) => {
   let id = req.params.id;
   let longURL = req.body.longURL;
   urlDatabase[id] = longURL;
+  res.redirect("/");
+});
+
+// LOGIN PAGE AND COOKIE SETUP
+app.post('/login', (req, res) => {
+  var username = req.body.username;
+  res.cookie('username', username);
   res.redirect("/");
 });
 
