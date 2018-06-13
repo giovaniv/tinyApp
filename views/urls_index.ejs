@@ -1,44 +1,33 @@
 <% include partials/_header.ejs %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>TinyApp</title>
-  <style>
-    body {
-      font-family: tahoma;
-      font-size: 12px;
-    }
-  </style>
-</head>
-<body>
-  <h3>Your Short URLs</h3>
-  <table width="100%" border=0>
 
-  <tr>
-    <td colspan=2 align=center>Actions</td>
-    <td>&nbsp;</td>
-    <td width="10%">Short Link</td>
-    <td>Full URL</td>
-  </tr>
+<h3>Your Short URLs</h3>
+<table width="100%" border=0>
 
-  <% for (item in urls) { %>
-  <tr>
-  <td width="1%">
-    <form method=get action="/urls/<%= item %>">
-    <input type=submit value=edit>
-    </form>
-  </td>
-  <td width="1%">
-    <form method=post action="/urls/<%= item %>/delete">
-    <input type=submit value=delete>
-    </form>
-  </td>
+<tr>
+  <td colspan=2 align=center>Actions</td>
   <td>&nbsp;</td>
-  <td><%= item %></td>
-  <td><%= urls[item] %></td>
-  </tr>
-  <% } %>
+  <td width="10%">Short Link</td>
+  <td>Full URL</td>
+</tr>
 
-  </table>
-</body>
-</html>
+<% for (item in urls) { %>
+<tr>
+<td width="1%">
+  <form method=get action="/urls/<%= item %>">
+  <input type=submit value=edit>
+  </form>
+</td>
+<td width="1%">
+  <form method=post action="/urls/<%= item %>/delete">
+  <input type=submit value=delete>
+  </form>
+</td>
+<td>&nbsp;</td>
+<td><%= item %></td>
+<td><%= urls[item] %></td>
+</tr>
+<% } %>
+
+</table>
+
+<% include partials/_footer.ejs %>

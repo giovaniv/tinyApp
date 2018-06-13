@@ -1,22 +1,10 @@
 <% include partials/_header.ejs %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Edit <%= shortURL %> short link</title>
-  <style>
-  body {
-    font-family: tahoma;
-    font-size: 12px;
-  }
-  </style>
-</head>
-<body>
-  <h3><%= shortURL %></h3>
 
-  <form action="/urls/<%= shortURL %>" method="POST" style="margin:150px;">
-    <input id="longURL" type="text" name="longURL" placeholder="<%= longURL%>" style="width: 300px">
-    <input type="submit" value="Update">
-  </form>
+<h3><%= shortURL %></h3>
 
-</body>
-</html>
+<form action="/urls/<%= shortURL %>" method="POST" style="margin:150px;">
+  <input id="longURL" type="text" name="longURL" placeholder="<%= longURL%>" style="width: 300px">
+  <input type="submit" value="Update">
+</form>
+
+<% include partials/_footer.ejs %>
