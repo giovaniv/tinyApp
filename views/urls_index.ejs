@@ -24,7 +24,7 @@
   <% for (item in urls) { %>
   <tr>
   <td width="1%">
-    <form method=post action="">
+    <form method=get action="/urls/<%= item %>">
     <input type=submit value=edit>
     </form>
   </td>
