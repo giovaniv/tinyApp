@@ -15,7 +15,7 @@
     <p class="alert alert-danger"><%= error %></p>
   <% } %>
 
-  <% if (username === '') { %>
+  <% if (username === undefined) { %>
 
     <h3>Login</h3><p>
     <form action="/login" method="POST">

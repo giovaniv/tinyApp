@@ -106,8 +106,26 @@ app.post('/urls/:id', (req, res) => {
 
 // LOGIN PAGE AND COOKIE SETUP
 app.post('/login', (req, res) => {
+
   var username = req.body.username;
-  res.cookie('username', username);
+
+  if (username) {
+    res.cookie('username', username);
+    res.redirect("/");
+  }
+  else {
+    res.render('urls_index', {
+      username: undefined,
+      urls: urlDatabase,
+      error: 'Please fill a username'
+    });
+  }
+
+});
+
+// LOGOUT AND CLEAN COOKIE
+app.post('/logout', (req, res) => {
+  res.clearCookie('username');
   res.redirect("/");
 });
 
