@@ -52,7 +52,8 @@ app.get("/", (req, res) => {
 
 // URLs list
 app.get("/urls", (req, res) => {
-  let templateVars = { users: userDatabase, urls: urlDatabase };
+  let userID = req.cookies.user_id;
+  let templateVars = { user: userDatabase[userID], urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
@@ -68,15 +69,18 @@ app.get('/users.json', (req,res) => {
 
 // Form to create a new shortlink based on a longLink
 app.get("/urls/new", (req, res) => {
-  let templateVars = { users: userDatabase };
+  let userID = req.cookies.user_id;
+  let templateVars = { user: userDatabase[userID] };
   res.render("urls_new", templateVars);
 });
 
 // Form to Edit or View a URL that was created
 app.get("/urls/:id", (req, res) => {
 
+  let userID = req.cookies.user_id;
+
   let templateVars = {
-    users: userDatabase,
+    user: userDatabase[userID],
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id] };
 
@@ -92,13 +96,15 @@ app.get("/u/:shortURL", (req, res) => {
 
 // Register new User page
 app.get("/register", (req, res) => {
-  let templateVars = { users: userDatabase };
+  let userID = req.cookies.user_id;
+  let templateVars = { user: userDatabase[userID] };
   res.render('register', templateVars);
 });
 
 // Login page
 app.get("/login", (req, res) => {
-  let templateVars = { users: userDatabase };
+  let userID = req.cookies.user_id;
+  let templateVars = { user: userDatabase[userID] };
   res.render('login', templateVars);
 });
 
@@ -139,6 +145,7 @@ app.post('/urls/:id', (req, res) => {
   let error;
   let id = req.params.id;
   let longURL = req.body.longURL;
+  let userID = req.cookies.user_id;
 
   if (longURL) {
     urlDatabase[id.toString()] = longURL;
@@ -146,7 +153,7 @@ app.post('/urls/:id', (req, res) => {
   }
   else {
     res.render('urls_show', {
-      users: userDatabase,
+      user: userDatabase[userID],
       shortURL: id,
       longURL: longURL,
       error: 'Please fill a long URL'

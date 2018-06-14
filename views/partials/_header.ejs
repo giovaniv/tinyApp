@@ -17,7 +17,9 @@
 
   <p><a class="btn btn-info" href="http://localhost:8080/register" role="button">Register</a><p>
 
-  <% if (locals.user_id) { %>
+  <% if (user) { %>
+
+    <h1>Welcome, <%= user.email %></h1>
 
     <form action="/logout" method="POST">
       <div class="form-inline p-2">
