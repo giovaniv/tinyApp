@@ -219,9 +219,10 @@ app.post('/login', (req, res) => {
       // });
       res.status(403).send('Wrong password. Please try again.');
     }
-
-    res.cookie('user_id', checkID.id);
-    res.redirect("/");
+    else {
+      res.cookie('user_id', checkID.id);
+      res.redirect("/");
+    }
 
   }
   // if this email doesnt exist
@@ -234,28 +235,11 @@ app.post('/login', (req, res) => {
     res.status(403).send('Email not found. Please register.');
   }
 
-  // // if username exists in the
-  // if (checkUsername) {
-
-  // }
-
-  // if (username) {
-  //   res.cookie('username', username);
-  //   res.redirect("/");
-  // }
-  // else {
-  //   res.render('urls_index', {
-  //     username: undefined,
-  //     urls: urlDatabase,
-  //     error: 'Please fill a username'
-  //   });
-  // }
-
 });
 
 // LOGOUT AND CLEAN COOKIE
 app.post('/logout', (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect("/");
 });
 

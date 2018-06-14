@@ -17,18 +17,17 @@
 
   <p><a class="btn btn-info" href="http://localhost:8080/register" role="button">Register</a><p>
 
-  <% if (users.username === undefined) { %>
+  <% if (locals.user_id) { %>
 
-    <p><a class="btn btn-info" href="http://localhost:8080/login" role="button">Login</a><p>
-
-  <% } else { %>
-
-    <h3>Welcome, <%= users.username%>.</h3><p>
     <form action="/logout" method="POST">
       <div class="form-inline p-2">
         <button type="submit" class="btn btn-primary">&nbsp;Logout</button>
       </div>
     </form>
     <p>
+
+  <% } else { %>
+
+    <p><a class="btn btn-info" href="http://localhost:8080/login" role="button">Login</a><p>
 
   <% }%>

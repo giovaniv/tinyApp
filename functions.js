@@ -16,13 +16,11 @@ module.exports = {
   // Function to check if some information already exist in field of database
   checkData(database, field, information) {
     if (!information) {
-      console.log('caiu aqui');
       return false;
     }
     else {
       for (let item in database) {
         let info = database[item][field];
-        console.log(info);
         if (information.toLowerCase() === info.toLowerCase()) {
           return database[item];
         }
