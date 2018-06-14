@@ -2,7 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const funcs = require('./functions');
-var cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser')
 
 // STARTING THE APP
 const app = express();
@@ -15,12 +15,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
 // FAKES DATABASES
-
-// URLS
-// const urlDatabase = {
-//   "b2xVn2": "http://www.lighthouselabs.ca",
-//   "9sm5xK": "http://www.google.com"
-// };
 
 const urlDatabase = {
   "b2xVn2": {
@@ -262,6 +256,11 @@ app.post('/register', (req, res) => {
   let userID = funcs.generateRandomString(6);
   let email = req.body.email;
   let password = req.body.password;
+
+  const bcrypt = require('bcrypt');
+  const passUsed = password;
+  const hashed = bcrypt.hashSync(passUsed, 10);
+
   let checkEmail;
 
   // we check if the email already exists
@@ -290,7 +289,7 @@ app.post('/register', (req, res) => {
     userDatabase[userID] = {
       id: userID.toString(),
       email: email,
-      password: password
+      password: hashed  //encripted password
     };
     res.cookie('user_id', userID.toString());
     res.redirect("/");
@@ -316,6 +315,10 @@ app.post('/login', (req, res) => {
 
   // we check if the username already exists
   checkID = funcs.checkData(userDatabase, 'email', email);
+
+  console.log(checkID.password);
+  console.log(password);
+  console.log(hashed);
 
   // if we have this email in database
   if (checkID) {
