@@ -108,7 +108,7 @@ app.get("/urls/:id", (req, res) => {
       res.render('urls_index', {
         user: userDatabase[userID],
         urls: urlDatabase,
-        error: 'You cant edit a short Link of other user'
+        error: 'You cannot edit a short Link of other user'
       });
       return;
     }
@@ -187,8 +187,12 @@ app.post('/urls/:id/delete', (req, res) => {
   if (userID) {
     // if its we check if it can edit
     if (userID !== urlDatabase[id].userID) {
-    res.render("/");
-    return;
+      res.render('urls_index', {
+        user: userDatabase[userID],
+        urls: urlDatabase,
+        error: 'You cannot delete a short Link of other user'
+      });
+      return;
     }
   } else {
     res.render("login");
@@ -243,21 +247,21 @@ app.post('/register', (req, res) => {
 
   // if already exist, 400 status
   if (checkEmail) {
-    // res.status(400);
-    // res.render('register', {
-    //   users: userDatabase,
-    //   error: 'Email already exists.'
-    // });
-    res.status(400).send('Email already exists.');
+    res.status(400);
+    res.render('register', {
+      user: userDatabase[userID],
+      error: 'Email already exists.'
+    });
+    //res.status(400).send('Email already exists.');
   }
   // if the email or password is empty, 400 status
   else if (!password || !email) {
-    // res.status(400);
-    // res.render('register', {
-    //   users: userDatabase,
-    //   error: 'Email or Password is empty.'
-    // });
-    res.status(400).send('Email or Password is empty.');
+    res.status(400);
+    res.render('register', {
+      user: userDatabase[userID],
+      error: 'Email or Password is empty.'
+    });
+    //res.status(400).send('Email or Password is empty.');
   }
   // else everything it's ok, we save this new user
   else {
@@ -276,8 +280,17 @@ app.post('/register', (req, res) => {
 app.post('/login', (req, res) => {
 
   let checkID;
+  //let userID = req.cookies.user_id;
   let email = req.body.email;
   let password = req.body.password;
+
+  if (!email || !password) {
+    res.render('login', {
+      //user: userDatabase[userID],
+      error: 'Email and/or password is empty.'
+    });
+    return;
+  }
 
   // we check if the username already exists
   checkID = funcs.checkData(userDatabase, 'email', email);
@@ -286,12 +299,12 @@ app.post('/login', (req, res) => {
   if (checkID) {
 
     if (password !== checkID.password) {
-      // res.status(403);
-      // res.render('/', {
-      //   users: userDatabase,
-      //   error: 'Wrong password. Please try again.'
-      // });
-      res.status(403).send('Wrong password. Please try again.');
+      res.status(403);
+      res.render('login', {
+        //user: userDatabase[userID],
+        error: 'Wrong password. Please try again.'
+      });
+      //res.status(403).send('Wrong password. Please try again.');
     }
     else {
       res.cookie('user_id', checkID.id);
@@ -301,12 +314,12 @@ app.post('/login', (req, res) => {
   }
   // if this email doesnt exist
   else {
-    // res.status(403);
-    // res.render('/', {
-    //   users: userDatabase,
-    //   error: 'Email not found. Please register.'
-    // });
-    res.status(403).send('Email not found. Please register.');
+    res.status(403);
+    res.render('login', {
+      //user: userDatabase[userID],
+      error: 'Email not found. Please register.'
+    });
+    //res.status(403).send('Email not found. Please register.');
   }
 
 });

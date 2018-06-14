@@ -12,6 +12,10 @@
   <p>
   <div class="container shadow p-3 mb-5 bg-blue rounded">
 
+  <% if (locals.error) { %>
+    <p class="alert alert-danger"><%= error %></p>
+  <% } %>
+
   <h3>Login</h3><p>
   <form action="/login" method="POST">
     <div class="row-sm-2">
