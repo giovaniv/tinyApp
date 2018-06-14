@@ -1,0 +1,17 @@
+<% include partials/_header.ejs %>
+
+  <h3>List of all URLs</h3><p>
+
+  <div class="row">
+    <div class="col-sm-2">Short URL</div>
+    <div class="col-sm-4">Full URL</div>
+  </div>
+
+  <% for (item in urls) { %>
+    <div class="row">
+      <div class="col-sm-2"><a href="<%= urls[item].longURL %>" target="_blank"><%= item %></a></div>
+      <div class="col-sm-4"><%= urls[item].longURL %></div>
+    </div>
+  <% } %>
+
+<% include partials/_footer.ejs %>

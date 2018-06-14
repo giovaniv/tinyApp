@@ -1,31 +1,39 @@
 <% include partials/_header.ejs %>
 
-<h3>Our short Links</h3><p>
+<% if (Object.keys(urls).length > 0) { %>
 
-<div class="row">
-  <div class="col-sm-2">Short Link</div>
-  <div class="col-sm-4">Full URL</div>
-  <div class="col-sm-2">Owner ID</div>
-  <div class="col-sm-2">Actions</div>
-</div>
+  <h3>My short Links</h3><p>
 
-<% for (item in urls) { %>
   <div class="row">
-    <div class="col-sm-2"><%= item %></div>
-    <div class="col-sm-4"><%= urls[item].longURL %></div>
-    <div class="col-sm-2"><%= urls[item].userID %></div>
-    <div class="col-sm-2 p-1">
+    <div class="col-sm-2">Short URL</div>
+    <div class="col-sm-4">Full URL</div>
+    <!--<div class="col-sm-2">Owner ID</div>-->
+    <div class="col-sm-2">Actions</div>
+  </div>
 
-      <form method=get action="/urls/<%= item %>">
-        <input type=submit value=edit>
+  <% for (item in urls) { %>
+    <div class="row">
+      <div class="col-sm-2"><%= item %></div>
+      <div class="col-sm-4"><%= urls[item].longURL %></div>
+      <!--<div class="col-sm-2"><%= //urls[item].userID %></div>-->
+      <div class="col-sm-2 p-1">
+
+        <form method=get action="/urls/<%= item %>">
+          <input type=submit value=edit>
+          </form>
+
+        <form method=post action="/urls/<%= item %>/delete">
+        <input type=submit value=delete>
         </form>
 
-      <form method=post action="/urls/<%= item %>/delete">
-      <input type=submit value=delete>
-      </form>
-
+      </div>
     </div>
-  </div>
+  <% } %>
+
+<% } else { %>
+
+  <div class="container">Time to create some short links!</div>
+
 <% } %>
 
 <% include partials/_footer.ejs %>

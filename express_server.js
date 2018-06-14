@@ -65,9 +65,17 @@ app.get("/", (req, res) => {
 
 // URLs list
 app.get("/urls", (req, res) => {
+
   let userID = req.cookies.user_id;
-  let templateVars = { user: userDatabase[userID], urls: urlDatabase };
+  let urlsList = funcs.urlsForUser(userID,urlDatabase);
+
+  let templateVars = {
+    user: userDatabase[userID],
+    urls: urlsList
+  };
+
   res.render("urls_index", templateVars);
+
 });
 
 // Path to show our URLs Database in JSON format
@@ -146,6 +154,20 @@ app.get("/login", (req, res) => {
   // let templateVars = { user: userDatabase[userID] };
   //res.render('login', templateVars);
   res.render('login');
+});
+
+// List of all URLs
+app.get("/list", (req, res) => {
+
+  let userID = req.cookies.user_id;
+
+  let templateVars = {
+    user: userDatabase[userID],
+    urls: urlDatabase
+  };
+
+  res.render("urls_list", templateVars);
+
 });
 
 // =======================================================
@@ -335,6 +357,6 @@ app.listen(port, () => {
   console.log(`Giovani's TinyApp listening on port ${port}!`);
 });
 
-
+//console.log(funcs.urlsForUser('sd1Ev1',urlDatabase));
 
 
