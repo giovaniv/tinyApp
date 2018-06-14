@@ -9,6 +9,24 @@ module.exports = {
       s += r.charAt(Math.floor(Math.random() * r.length));
     }
     return s;
+  },
+
+  // funcs.checkData(users, 'email', email)
+
+  // Function to check if some information already exist in field of database
+  checkData(database, field, information) {
+    if (!information) {
+      return false;
+    }
+    else {
+      for (let item in database) {
+        let info = database[item][field];
+        if (information.toLowerCase() === info.toLowerCase()) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
 };

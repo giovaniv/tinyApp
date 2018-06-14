@@ -1,23 +1,28 @@
+// REQUIRES
 const express = require('express');
 const bodyParser = require('body-parser');
 const funcs = require('./functions');
 var cookieParser = require('cookie-parser')
 
+// STARTING THE APP
 const app = express();
 const port = 8080;
 
 app.set('view engine', 'ejs');
 
+// MIDDLEWARES (PLUG-INS)
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
-// URL Database
+// FAKES DATABASES
+
+// URLS
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
-// Users Database
+// USERS
 const users = {
   "sd1Ev1": {
     id: "sd1Ev1",
@@ -37,7 +42,7 @@ const users = {
 }
 
 // =======================================================
-// GET ROUTERS
+// ENDPOINTS - GET
 // =======================================================
 
 // Root of our TinyApp, until now just redirecting to the URL List
@@ -51,9 +56,14 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-// Path to show our Database in JSON format
+// Path to show our URLs Database in JSON format
 app.get('/urls.json', (req,res) => {
   res.json(urlDatabase);
+});
+
+// Path to show our Users Database in JSON format
+app.get('/users.json', (req,res) => {
+  res.json(users);
 });
 
 // Form to create a new shortlink based on a longLink
@@ -62,6 +72,7 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
+// Form to Edit or View a URL that was created
 app.get("/urls/:id", (req, res) => {
 
   let templateVars = {
@@ -73,11 +84,13 @@ app.get("/urls/:id", (req, res) => {
 
 });
 
+// Redirection of the short link that was created
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
 
+// Register new User page
 app.get("/register", (req, res) => {
   let templateVars = { username: req.cookies['username']};
   res.render('register', templateVars);
@@ -107,14 +120,14 @@ app.post('/urls', (req, res) => {
 
 });
 
-// DELETE
+// DELETE URL
 app.post('/urls/:id/delete', (req, res) => {
   let id = req.params.id;
   delete urlDatabase[id];
   res.redirect("/");
 });
 
-// UPDATE
+// UPDATE URL
 app.post('/urls/:id', (req, res) => {
 
   let error;
@@ -143,8 +156,31 @@ app.post('/register', (req, res) => {
   let userID = funcs.generateRandomString(6);
   let email = req.body.email;
   let password = req.body.password;
+  let checkEmail;
 
-  if (email && password) {
+  // we check if the email already exists
+  checkEmail = funcs.checkData(users, 'email', email);
+
+  // if already exist, 400 status
+  if (checkEmail) {
+    res.status(400);
+    res.render('register', {
+      username: req.cookies['username'],
+      error: 'Email already exists.'
+    });
+    //res.status(400).send('Email already exists.');
+  }
+  // if the email or password is empty, 400 status
+  else if (!password || !email) {
+    res.status(400);
+    res.render('register', {
+      username: req.cookies['username'],
+      error: 'Email or Password is empty.'
+    });
+    //res.status(400).send('Email or Password is empty.');
+  }
+  // else everything it's ok, we save this new user
+  else {
     users[userID] = {
       id: userID.toString(),
       email: email,
@@ -152,12 +188,6 @@ app.post('/register', (req, res) => {
     };
     res.cookie('user_id', userID);
     res.redirect("/");
-  }
-  else {
-    res.render('register', {
-      username: req.cookies['username'],
-      error: 'Please fill an email and password'
-    });
   }
 
 });
