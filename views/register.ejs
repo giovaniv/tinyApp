@@ -1,0 +1,17 @@
+<% include partials/_header.ejs %>
+
+  <h3>Register</h3><p>
+  <form action="/register" method="POST">
+    <div class="row-sm-2">
+      <div class="col-sm-3 form p-2">
+        <label for="email">Email:&nbsp;</label>
+        <input type="email" class="form-control" name="email" id="email" aria-describedby="email">
+        <label for="password">Password:&nbsp;</label>
+        <input type="password" class="form-control" name="password" id="password" aria-describedby="password">
+        <button type="submit" class="btn btn-primary">&nbsp;Submit</button>
+      </div>
+    </div>
+  </form>
+  <p>
+
+<% include partials/_footer.ejs %>

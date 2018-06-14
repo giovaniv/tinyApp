@@ -17,6 +17,10 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+// =======================================================
+// GET ROUTERS
+// =======================================================
+
 // Root of our TinyApp, until now just redirecting to the URL List
 app.get("/", (req, res) => {
   res.redirect("/urls");
@@ -54,6 +58,15 @@ app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
+
+app.get("/register", (req, res) => {
+  let templateVars = { username: req.cookies['username']};
+  res.render('register', templateVars);
+});
+
+// =======================================================
+// POSTS ROUTERS
+// =======================================================
 
 // REDIRECT TO THE ORIGINAL URL (THAT WAS NOT SHORTED)
 app.post('/urls', (req, res) => {
