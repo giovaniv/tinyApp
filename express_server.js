@@ -11,11 +11,30 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
-// Initial Database of our tinyApp
+// URL Database
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
+// Users Database
+const users = {
+  "sd1Ev1": {
+    id: "sd1Ev1",
+    email: "giovaniv@gmail.com",
+    password: "giovaniv"
+  },
+ "1ZdXjV": {
+    id: "1ZdXjV",
+    email: "andrade.gi@gmail.com",
+    password: "andrade.gi"
+  },
+ "fCBciK": {
+    id: "fCBciK",
+    email: "vheytor@gmail.com",
+    password: "vheytor"
+  }
+}
 
 // =======================================================
 // GET ROUTERS
@@ -75,7 +94,7 @@ app.post('/urls', (req, res) => {
   let shortLink = funcs.generateRandomString(6);
 
   if (req.body.longURL) {
-    urlDatabase[shortLink] = req.body.longURL;
+    urlDatabase[shortLink.toString()] = req.body.longURL;
     let shortUrl = '/u/'+shortLink;
     res.redirect(shortUrl);
   }
@@ -103,7 +122,7 @@ app.post('/urls/:id', (req, res) => {
   let longURL = req.body.longURL;
 
   if (longURL) {
-    urlDatabase[id] = longURL;
+    urlDatabase[id.toString()] = longURL;
     res.redirect("/",);
   }
   else {
@@ -112,6 +131,32 @@ app.post('/urls/:id', (req, res) => {
       shortURL: id,
       longURL: longURL,
       error: 'Please fill a long URL'
+    });
+  }
+
+});
+
+// REGISTER A NEW USER IN THE SYSTEM
+app.post('/register', (req, res) => {
+
+  let error;
+  let userID = funcs.generateRandomString(6);
+  let email = req.body.email;
+  let password = req.body.password;
+
+  if (email && password) {
+    users[userID] = {
+      id: userID.toString(),
+      email: email,
+      password: password
+    };
+    res.cookie('user_id', userID);
+    res.redirect("/");
+  }
+  else {
+    res.render('register', {
+      username: req.cookies['username'],
+      error: 'Please fill an email and password'
     });
   }
 
@@ -142,12 +187,10 @@ app.post('/logout', (req, res) => {
   res.redirect("/");
 });
 
-// Listener to our tinyApp
+// LISTENER OF OUR TINYAPP
 app.listen(port, () => {
   console.log(`Giovani's TinyApp listening on port ${port}!`);
 });
-
-
 
 
 
