@@ -17,9 +17,22 @@ app.use(cookieParser());
 // FAKES DATABASES
 
 // URLS
+// const urlDatabase = {
+//   "b2xVn2": "http://www.lighthouselabs.ca",
+//   "9sm5xK": "http://www.google.com"
+// };
+
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    id: "b2xVn2",
+    longURL: "http://www.lighthouselabs.ca",
+    userID: "sd1Ev1"
+  },
+  "9sm5xK": {
+    id: "9sm5xK",
+    longURL: "http://www.google.com",
+    userID: "1ZdXjV"
+  }
 };
 
 // USERS
@@ -69,20 +82,45 @@ app.get('/users.json', (req,res) => {
 
 // Form to create a new shortlink based on a longLink
 app.get("/urls/new", (req, res) => {
+
   let userID = req.cookies.user_id;
-  let templateVars = { user: userDatabase[userID] };
-  res.render("urls_new", templateVars);
+
+  if (!userID) {
+    res.render('login');
+  }
+  else {
+    let templateVars = { user: userDatabase[userID] };
+    res.render("urls_new", templateVars);
+  }
+
 });
 
 // Form to Edit or View a URL that was created
 app.get("/urls/:id", (req, res) => {
 
   let userID = req.cookies.user_id;
+  let shortURL = req.params.id;
+
+  // we check if the user is loggedIn
+  if (userID) {
+    // if its we check if it can edit
+    if (userID !== urlDatabase[shortURL].userID) {
+      res.render('urls_index', {
+        user: userDatabase[userID],
+        urls: urlDatabase,
+        error: 'You cant edit a short Link of other user'
+      });
+      return;
+    }
+  } else {
+    res.render("login");
+    return;
+  }
 
   let templateVars = {
     user: userDatabase[userID],
-    shortURL: req.params.id,
-    longURL: urlDatabase[req.params.id] };
+    shortURL: shortURL,
+    longURL: urlDatabase[shortURL].longURL };
 
   res.render("urls_show", templateVars);
 
@@ -90,7 +128,8 @@ app.get("/urls/:id", (req, res) => {
 
 // Redirection of the short link that was created
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL];
+  let shortURL = req.params.shortURL;
+  let longURL = urlDatabase[shortURL].longURL;
   res.redirect(longURL);
 });
 
@@ -103,9 +142,10 @@ app.get("/register", (req, res) => {
 
 // Login page
 app.get("/login", (req, res) => {
-  let userID = req.cookies.user_id;
-  let templateVars = { user: userDatabase[userID] };
-  res.render('login', templateVars);
+  // let userID = req.cookies.user_id;
+  // let templateVars = { user: userDatabase[userID] };
+  //res.render('login', templateVars);
+  res.render('login');
 });
 
 // =======================================================
@@ -116,10 +156,15 @@ app.get("/login", (req, res) => {
 app.post('/urls', (req, res) => {
 
   let error;
+  let userID = req.cookies.user_id;
   let shortLink = funcs.generateRandomString(6);
 
   if (req.body.longURL) {
-    urlDatabase[shortLink.toString()] = req.body.longURL;
+    urlDatabase[shortLink.toString()] = {
+      id: shortLink.toString(),
+      longURL: req.body.longURL,
+      userID: userID
+    };
     let shortUrl = '/u/'+shortLink;
     res.redirect(shortUrl);
   }
@@ -134,21 +179,43 @@ app.post('/urls', (req, res) => {
 
 // DELETE URL
 app.post('/urls/:id/delete', (req, res) => {
+
   let id = req.params.id;
+  let userID = req.cookies.user_id;
+
+  // we check if the user is loggedIn
+  if (userID) {
+    // if its we check if it can edit
+    if (userID !== urlDatabase[id].userID) {
+    res.render("/");
+    return;
+    }
+  } else {
+    res.render("login");
+    return;
+  }
+
   delete urlDatabase[id];
   res.redirect("/");
+
 });
 
 // UPDATE URL
 app.post('/urls/:id', (req, res) => {
 
   let error;
-  let id = req.params.id;
+  let id = req.params.id.toString();
   let longURL = req.body.longURL;
   let userID = req.cookies.user_id;
 
+  // if the user isn't the owner of this short link
+  // we redirect to the list of short links
+  if (userID !== urlDatabase[id].userID) {
+    res.redirect("/");
+  }
+
   if (longURL) {
-    urlDatabase[id.toString()] = longURL;
+    urlDatabase[id].longURL = longURL;
     res.redirect("/",);
   }
   else {

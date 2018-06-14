@@ -1,19 +1,19 @@
 <% include partials/_header.ejs %>
 
-<p><a class="btn btn-info" href="http://localhost:8080/urls/new" role="button">New short Link</a><p>
-
 <h3>Our short Links</h3><p>
 
 <div class="row">
   <div class="col-sm-2">Short Link</div>
   <div class="col-sm-4">Full URL</div>
+  <div class="col-sm-2">Owner ID</div>
   <div class="col-sm-2">Actions</div>
 </div>
 
 <% for (item in urls) { %>
   <div class="row">
     <div class="col-sm-2"><%= item %></div>
-    <div class="col-sm-4"><%= urls[item] %></div>
+    <div class="col-sm-4"><%= urls[item].longURL %></div>
+    <div class="col-sm-2"><%= urls[item].userID %></div>
     <div class="col-sm-2 p-1">
 
       <form method=get action="/urls/<%= item %>">

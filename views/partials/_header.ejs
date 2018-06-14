@@ -15,11 +15,9 @@
     <p class="alert alert-danger"><%= error %></p>
   <% } %>
 
-  <p><a class="btn btn-info" href="http://localhost:8080/register" role="button">Register</a><p>
-
   <% if (user) { %>
 
-    <h1>Welcome, <%= user.email %></h1>
+    <h1>Welcome, <%= user.id %></h1>
 
     <form action="/logout" method="POST">
       <div class="form-inline p-2">
@@ -28,8 +26,13 @@
     </form>
     <p>
 
+    <p><a class="btn btn-info" href="http://localhost:8080/urls/new" role="button">New short Link</a><p>
+
   <% } else { %>
 
+    <p><a class="btn btn-info" href="http://localhost:8080/register" role="button">Register</a><p>
     <p><a class="btn btn-info" href="http://localhost:8080/login" role="button">Login</a><p>
 
   <% }%>
+
+  <hr>
