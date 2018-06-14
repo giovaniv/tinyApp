@@ -23,7 +23,7 @@ const urlDatabase = {
 };
 
 // USERS
-const users = {
+const userDatabase = {
   "sd1Ev1": {
     id: "sd1Ev1",
     email: "giovaniv@gmail.com",
@@ -52,7 +52,7 @@ app.get("/", (req, res) => {
 
 // URLs list
 app.get("/urls", (req, res) => {
-  let templateVars = { username: req.cookies['username'], urls: urlDatabase };
+  let templateVars = { users: userDatabase, urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
@@ -63,12 +63,12 @@ app.get('/urls.json', (req,res) => {
 
 // Path to show our Users Database in JSON format
 app.get('/users.json', (req,res) => {
-  res.json(users);
+  res.json(userDatabase);
 });
 
 // Form to create a new shortlink based on a longLink
 app.get("/urls/new", (req, res) => {
-  let templateVars = { username: req.cookies['username']};
+  let templateVars = { users: userDatabase };
   res.render("urls_new", templateVars);
 });
 
@@ -76,7 +76,7 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:id", (req, res) => {
 
   let templateVars = {
-    username: req.cookies['username'],
+    users: userDatabase,
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id] };
 
@@ -92,12 +92,18 @@ app.get("/u/:shortURL", (req, res) => {
 
 // Register new User page
 app.get("/register", (req, res) => {
-  let templateVars = { username: req.cookies['username']};
+  let templateVars = { users: userDatabase };
   res.render('register', templateVars);
 });
 
+// Login page
+app.get("/login", (req, res) => {
+  let templateVars = { users: userDatabase };
+  res.render('login', templateVars);
+});
+
 // =======================================================
-// POSTS ROUTERS
+// ENDPOINTS - POST
 // =======================================================
 
 // REDIRECT TO THE ORIGINAL URL (THAT WAS NOT SHORTED)
@@ -113,7 +119,7 @@ app.post('/urls', (req, res) => {
   }
   else {
     res.render('urls_new', {
-      username: req.cookies['username'],
+      users: userDatabase,
       error: 'Please fill a long URL'
     });
   }
@@ -140,7 +146,7 @@ app.post('/urls/:id', (req, res) => {
   }
   else {
     res.render('urls_show', {
-      username: req.cookies['username'],
+      users: userDatabase,
       shortURL: id,
       longURL: longURL,
       error: 'Please fill a long URL'
@@ -159,34 +165,34 @@ app.post('/register', (req, res) => {
   let checkEmail;
 
   // we check if the email already exists
-  checkEmail = funcs.checkData(users, 'email', email);
+  checkEmail = funcs.checkData(userDatabase, 'email', email);
 
   // if already exist, 400 status
   if (checkEmail) {
-    res.status(400);
-    res.render('register', {
-      username: req.cookies['username'],
-      error: 'Email already exists.'
-    });
-    //res.status(400).send('Email already exists.');
+    // res.status(400);
+    // res.render('register', {
+    //   users: userDatabase,
+    //   error: 'Email already exists.'
+    // });
+    res.status(400).send('Email already exists.');
   }
   // if the email or password is empty, 400 status
   else if (!password || !email) {
-    res.status(400);
-    res.render('register', {
-      username: req.cookies['username'],
-      error: 'Email or Password is empty.'
-    });
-    //res.status(400).send('Email or Password is empty.');
+    // res.status(400);
+    // res.render('register', {
+    //   users: userDatabase,
+    //   error: 'Email or Password is empty.'
+    // });
+    res.status(400).send('Email or Password is empty.');
   }
   // else everything it's ok, we save this new user
   else {
-    users[userID] = {
+    userDatabase[userID] = {
       id: userID.toString(),
       email: email,
       password: password
     };
-    res.cookie('user_id', userID);
+    res.cookie('user_id', userID.toString());
     res.redirect("/");
   }
 
@@ -195,19 +201,55 @@ app.post('/register', (req, res) => {
 // LOGIN PAGE AND COOKIE SETUP
 app.post('/login', (req, res) => {
 
-  var username = req.body.username;
+  let checkID;
+  let email = req.body.email;
+  let password = req.body.password;
 
-  if (username) {
-    res.cookie('username', username);
+  // we check if the username already exists
+  checkID = funcs.checkData(userDatabase, 'email', email);
+
+  // if we have this email in database
+  if (checkID) {
+
+    if (password !== checkID.password) {
+      // res.status(403);
+      // res.render('/', {
+      //   users: userDatabase,
+      //   error: 'Wrong password. Please try again.'
+      // });
+      res.status(403).send('Wrong password. Please try again.');
+    }
+
+    res.cookie('user_id', checkID.id);
     res.redirect("/");
+
   }
+  // if this email doesnt exist
   else {
-    res.render('urls_index', {
-      username: undefined,
-      urls: urlDatabase,
-      error: 'Please fill a username'
-    });
+    // res.status(403);
+    // res.render('/', {
+    //   users: userDatabase,
+    //   error: 'Email not found. Please register.'
+    // });
+    res.status(403).send('Email not found. Please register.');
   }
+
+  // // if username exists in the
+  // if (checkUsername) {
+
+  // }
+
+  // if (username) {
+  //   res.cookie('username', username);
+  //   res.redirect("/");
+  // }
+  // else {
+  //   res.render('urls_index', {
+  //     username: undefined,
+  //     urls: urlDatabase,
+  //     error: 'Please fill a username'
+  //   });
+  // }
 
 });
 

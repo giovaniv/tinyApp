@@ -15,21 +15,15 @@
     <p class="alert alert-danger"><%= error %></p>
   <% } %>
 
-  <% if (username === undefined) { %>
+  <p><a class="btn btn-info" href="http://localhost:8080/register" role="button">Register</a><p>
 
-    <h3>Login</h3><p>
-    <form action="/login" method="POST">
-      <div class="form-inline p-2">
-        <label for="username">Username:&nbsp;</label>
-        <input type="text" class="form-control" name="username" id="username" value="<%=username%>" aria-describedby="username">
-        <button type="submit" class="btn btn-primary">&nbsp;Submit</button>
-      </div>
-    </form>
-    <p>
+  <% if (users.username === undefined) { %>
+
+    <p><a class="btn btn-info" href="http://localhost:8080/login" role="button">Login</a><p>
 
   <% } else { %>
 
-    <h3>Welcome, <%= username%>.</h3><p>
+    <h3>Welcome, <%= users.username%>.</h3><p>
     <form action="/logout" method="POST">
       <div class="form-inline p-2">
         <button type="submit" class="btn btn-primary">&nbsp;Logout</button>
