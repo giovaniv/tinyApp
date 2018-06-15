@@ -24,35 +24,35 @@ app.use(cookieSession({
 // FAKES DATABASES
 
 const urlDatabase = {
-  "b2xVn2": {
-    id: "b2xVn2",
-    longURL: "http://www.lighthouselabs.ca",
-    userID: "sd1Ev1"
-  },
-  "9sm5xK": {
-    id: "9sm5xK",
-    longURL: "http://www.google.com",
-    userID: "1ZdXjV"
-  }
+  // "b2xVn2": {
+  //   id: "b2xVn2",
+  //   longURL: "http://www.lighthouselabs.ca",
+  //   userID: "sd1Ev1"
+  // },
+  // "9sm5xK": {
+  //   id: "9sm5xK",
+  //   longURL: "http://www.google.com",
+  //   userID: "1ZdXjV"
+  // }
 };
 
 // USERS
 const userDatabase = {
-  "sd1Ev1": {
-    id: "sd1Ev1",
-    email: "giovaniv@gmail.com",
-    password: "giovaniv"
-  },
- "1ZdXjV": {
-    id: "1ZdXjV",
-    email: "andrade.gi@gmail.com",
-    password: "andrade.gi"
-  },
- "fCBciK": {
-    id: "fCBciK",
-    email: "vheytor@gmail.com",
-    password: "vheytor"
-  }
+ //  "sd1Ev1": {
+ //    id: "sd1Ev1",
+ //    email: "giovaniv@gmail.com",
+ //    password: "giovaniv"
+ //  },
+ // "1ZdXjV": {
+ //    id: "1ZdXjV",
+ //    email: "andrade.gi@gmail.com",
+ //    password: "andrade.gi"
+ //  },
+ // "fCBciK": {
+ //    id: "fCBciK",
+ //    email: "vheytor@gmail.com",
+ //    password: "vheytor"
+ //  }
 }
 
 // =======================================================

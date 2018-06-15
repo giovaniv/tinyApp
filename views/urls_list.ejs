@@ -1,17 +1,37 @@
 <% include partials/_header.ejs %>
 
-  <h3>List of all URLs</h3><p>
+<% if (Object.keys(urls).length > 0) { %>
 
-  <div class="row">
-    <div class="col-sm-2">Short URL</div>
-    <div class="col-sm-4">Full URL</div>
-  </div>
+  <% let num = 0; %>
 
-  <% for (item in urls) { %>
-    <div class="row">
-      <div class="col-sm-2"><a href="<%= urls[item].longURL %>" target="_blank"><%= item %></a></div>
-      <div class="col-sm-4"><%= urls[item].longURL %></div>
-    </div>
-  <% } %>
+  <h5>List of all URLs</h5><p>
+
+  <table class="table table-striped table-bordered table-sm">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Short Link</th>
+        <th scope="col">Full URL Address</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    <% for (item in urls) { %>
+      <% num++; %>
+      <tr>
+        <th scope="row"><%=num%></th>
+        <td><a href="<%= urls[item].longURL %>" target="_blank"><%= item %></a></td>
+        <td><%= urls[item].longURL %></td>
+      </tr>
+    <% } %>
+
+    </tbody>
+  </table>
+
+<% } else { %>
+
+  <div class="container">None URL created yet</div>
+
+<% } %>
 
 <% include partials/_footer.ejs %>

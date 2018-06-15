@@ -11,8 +11,6 @@ module.exports = {
     return s;
   },
 
-  // funcs.checkData(users, 'email', email)
-
   // Function to check if some information already exist in field of database
   checkData: function(database, field, information) {
     if (!information) {

@@ -2,32 +2,36 @@
 
 <% if (Object.keys(urls).length > 0) { %>
 
-  <h3>My short Links</h3><p>
+  <% let num = 0; %>
 
-  <div class="row">
-    <div class="col-sm-2">Short URL</div>
-    <div class="col-sm-4">Full URL</div>
-    <!--<div class="col-sm-2">Owner ID</div>-->
-    <div class="col-sm-2">Actions</div>
-  </div>
+  <h5>My short Links</h5><p>
+
+  <table class="table table-striped table-bordered table-sm">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Short Link</th>
+        <th scope="col">Full URL Address</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
 
   <% for (item in urls) { %>
-    <div class="row">
-      <div class="col-sm-2"><%= item %></div>
-      <div class="col-sm-4"><%= urls[item].longURL %></div>
-      <!--<div class="col-sm-2"><%= //urls[item].userID %></div>-->
-      <div class="col-sm-2 p-1">
 
-        <form method=get action="/urls/<%= item %>">
-          <input type=submit value=edit>
-          </form>
+    <% num++; %>
+    <tr>
+      <th scope="row"><%=num%></th>
+      <td><%= item %></td>
+      <td><%= urls[item].longURL %></td>
+      <td>
+        <div class=row>
+        <div class="col-sm-2"><form method=get action="/urls/<%= item %>"><input type=submit value=edit class="btn-info"></form></div>
+        <div class="col-sm-2"><form method=post action="/urls/<%= item %>/delete"><input type=submit value=delete class="btn-danger"></form></div>
+        </div>
+      </td>
+    </tr>
 
-        <form method=post action="/urls/<%= item %>/delete">
-        <input type=submit value=delete>
-        </form>
-
-      </div>
-    </div>
   <% } %>
 
 <% } else { %>
