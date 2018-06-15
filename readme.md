@@ -4,8 +4,9 @@ Full stack web application built with Node and Express that allows users to shor
 
 ## Final Product
 
-!["Image 1"](#)
-!["Image 2"](#)
+!["Index Page"](./docs/index.png)
+!["New Short Link"](./docs/new_shortlink.png)
+!["My links"](./docs/my_link.png)
 
 ## Dependencies
 
