@@ -2,7 +2,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const funcs = require('./functions');
-//const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session')
 const bcrypt = require('bcryptjs');
 
@@ -14,7 +13,6 @@ app.set('view engine', 'ejs');
 
 // MIDDLEWARES (PLUG-INS)
 app.use(bodyParser.urlencoded({extended: true}));
-//app.use(cookieParser());
 
 app.use(cookieSession({
   name: 'user_id',
@@ -111,7 +109,7 @@ app.get("/u/:shortURL", (req, res) => {
 
   let shortURL = req.params.shortURL;
   let longURL = urlDatabase[shortURL].longURL;
-  res.redirect("/urls");
+  res.redirect(longURL);
 
 });
 
@@ -163,7 +161,8 @@ app.post('/urls', (req, res) => {
       userID: userID
     };
     let shortUrl = '/u/'+shortLink;
-    res.redirect(shortUrl);
+    //res.redirect(shortUrl);
+    res.redirect('/urls');
   }
   else {
     res.render('urls_new', {
