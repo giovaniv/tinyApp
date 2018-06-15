@@ -11,7 +11,7 @@
 </head>
 <body>
 
-  <p><center><h2 class="text-black">Giovani's TinyApp</h2><small class="text-muted">for awesome short links</small></center><p>
+  <p><center><h2 class="text-black">Giovani's TinyApp</h2><small class="text-muted">for awesome short links</small></center><p><br>
 
   <div class="container shadow-lg p-3 mb-5 bg-white rounded">
 
@@ -19,27 +19,18 @@
     <p class="alert alert-danger"><%= error %></p>
   <% } %>
 
-  <% if (user) { %>
+  <div class="input-group col-md-15 mt-3">
+    <a class="btn btn-secondary" href="http://localhost:8080/list" role="button">List of Links</a>&nbsp;
+    <% if (user) { %>
+      <a class="btn btn-secondary" href="http://localhost:8080/urls/new" role="button">New short Link</a>&nbsp;
+      <a class="btn btn-secondary" href="http://localhost:8080/" role="button">My Links</a>&nbsp;
+      <form action="/logout" method="POST"><button type="submit" class="btn btn-dark">Logout</button></form>
+    <% } else { %>
+      <a class="btn btn-success" href="http://localhost:8080/register" role="button">Register</a>&nbsp;
+      <a class="btn btn-primary" href="http://localhost:8080/login" role="button">Login</a>
+    <% }%>
+  </div>
 
-    <h1>Welcome, <%= user.id %></h1>
-
-    <form action="/logout" method="POST">
-      <div class="form-inline p-2">
-        <button type="submit" class="btn btn-primary">Logout</button>
-      </div>
-    </form>
-    <p>
-
-    <p><a class="btn btn-info" href="http://localhost:8080/urls/new" role="button">New short Link</a><p>
-    <p><a class="btn btn-info" href="http://localhost:8080/" role="button">My Links</a><p>
-
-  <% } else { %>
-
-    <p><a class="btn btn-info" href="http://localhost:8080/register" role="button">Register</a><p>
-    <p><a class="btn btn-info" href="http://localhost:8080/login" role="button">Login</a><p>
-
-  <% }%>
-
-  <p><a class="btn btn-info" href="http://localhost:8080/list" role="button">List of Links</a><p>
+  <p><h5><% if (user) { %> Welcome, <%= user.email %> <% } %></h5>
 
   <hr>

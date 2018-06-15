@@ -23,37 +23,10 @@ app.use(cookieSession({
 
 // FAKES DATABASES
 
-const urlDatabase = {
-  // "b2xVn2": {
-  //   id: "b2xVn2",
-  //   longURL: "http://www.lighthouselabs.ca",
-  //   userID: "sd1Ev1"
-  // },
-  // "9sm5xK": {
-  //   id: "9sm5xK",
-  //   longURL: "http://www.google.com",
-  //   userID: "1ZdXjV"
-  // }
-};
+const urlDatabase = {};
 
 // USERS
-const userDatabase = {
- //  "sd1Ev1": {
- //    id: "sd1Ev1",
- //    email: "giovaniv@gmail.com",
- //    password: "giovaniv"
- //  },
- // "1ZdXjV": {
- //    id: "1ZdXjV",
- //    email: "andrade.gi@gmail.com",
- //    password: "andrade.gi"
- //  },
- // "fCBciK": {
- //    id: "fCBciK",
- //    email: "vheytor@gmail.com",
- //    password: "vheytor"
- //  }
-}
+const userDatabase = {}
 
 // =======================================================
 // ENDPOINTS - GET
@@ -67,16 +40,12 @@ app.get("/", (req, res) => {
 // URLs list
 app.get("/urls", (req, res) => {
 
-  //let userID = req.cookies.user_id;
   let userID = req.session.user_id;
-
   let urlsList = funcs.urlsForUser(userID,urlDatabase);
-
   let templateVars = {
     user: userDatabase[userID],
     urls: urlsList
   };
-
   res.render("urls_index", templateVars);
 
 });
@@ -94,7 +63,6 @@ app.get('/users.json', (req,res) => {
 // Form to create a new shortlink based on a longLink
 app.get("/urls/new", (req, res) => {
 
-  //let userID = req.cookies.user_id;
   let userID = req.session.user_id;
 
   if (!userID) {
@@ -110,9 +78,7 @@ app.get("/urls/new", (req, res) => {
 // Form to Edit or View a URL that was created
 app.get("/urls/:id", (req, res) => {
 
-  //let userID = req.cookies.user_id;
   let userID = req.session.user_id;
-
   let shortURL = req.params.id;
 
   // we check if the user is loggedIn
@@ -142,40 +108,39 @@ app.get("/urls/:id", (req, res) => {
 
 // Redirection of the short link that was created
 app.get("/u/:shortURL", (req, res) => {
+
   let shortURL = req.params.shortURL;
   let longURL = urlDatabase[shortURL].longURL;
-  res.redirect(longURL);
+  res.redirect("/urls");
+
 });
 
 // Register new User page
 app.get("/register", (req, res) => {
 
-  //let userID = req.cookies.user_id;
   let userID = req.session.user_id;
-
   let templateVars = { user: userDatabase[userID] };
   res.render('register', templateVars);
+
 });
 
 // Login page
 app.get("/login", (req, res) => {
-  // let userID = req.cookies.user_id;
-  // let templateVars = { user: userDatabase[userID] };
-  //res.render('login', templateVars);
-  res.render('login');
+
+  let userID = req.session.user_id;
+  let templateVars = { user: userDatabase[userID] };
+  res.render('login', templateVars);
+
 });
 
 // List of all URLs
 app.get("/list", (req, res) => {
 
-  //let userID = req.cookies.user_id;
   let userID = req.session.user_id;
-
   let templateVars = {
     user: userDatabase[userID],
     urls: urlDatabase
   };
-
   res.render("urls_list", templateVars);
 
 });
@@ -188,10 +153,7 @@ app.get("/list", (req, res) => {
 app.post('/urls', (req, res) => {
 
   let error;
-
-  //let userID = req.cookies.user_id;
   let userID = req.session.user_id;
-
   let shortLink = funcs.generateRandomString(6);
 
   if (req.body.longURL) {
@@ -216,8 +178,6 @@ app.post('/urls', (req, res) => {
 app.post('/urls/:id/delete', (req, res) => {
 
   let id = req.params.id;
-
-  //let userID = req.cookies.user_id;
   let userID = req.session.user_id;
 
   // we check if the user is loggedIn
@@ -247,8 +207,6 @@ app.post('/urls/:id', (req, res) => {
   let error;
   let id = req.params.id.toString();
   let longURL = req.body.longURL;
-
-  //let userID = req.cookies.user_id;
   let userID = req.session.user_id;
 
   // if the user isn't the owner of this short link
@@ -279,9 +237,8 @@ app.post('/register', (req, res) => {
   let userID = funcs.generateRandomString(6);
   let email = req.body.email;
   let password = req.body.password;
-  const hashed = bcrypt.hashSync(password, 10);
-
   let checkEmail;
+  const hashed = bcrypt.hashSync(password, 10);
 
   // we check if the email already exists
   checkEmail = funcs.checkData(userDatabase, 'email', email);
@@ -312,9 +269,7 @@ app.post('/register', (req, res) => {
       password: hashed  //encripted password
     };
 
-    //res.cookie('user_id', userID.toString());
     req.session.user_id = userID.toString();
-
     res.redirect("/");
   }
 
@@ -324,13 +279,17 @@ app.post('/register', (req, res) => {
 app.post('/login', (req, res) => {
 
   let checkID;
-  //let userID = req.cookies.user_id;
+  let userID = undefined;
   let email = req.body.email;
   let password = req.body.password;
 
+  if (req.cookies) {
+    userID = userDatabase[req.cookies.user_id];
+  }
+
   if (!email || !password) {
     res.render('login', {
-      //user: userDatabase[userID],
+      user: userID,
       error: 'Email and/or password is empty.'
     });
     return;
@@ -348,13 +307,12 @@ app.post('/login', (req, res) => {
     if (!checkPassword) {
       res.status(403);
       res.render('login', {
-        //user: userDatabase[userID],
+        user: userID,
         error: 'Wrong password. Please try again.'
       });
       //res.status(403).send('Wrong password. Please try again.');
     }
     else {
-      //res.cookie('user_id', checkID.id);
       req.session.user_id = checkID.id;
       res.redirect("/");
     }
@@ -364,7 +322,7 @@ app.post('/login', (req, res) => {
   else {
     res.status(403);
     res.render('login', {
-      //user: userDatabase[userID],
+      user: userID,
       error: 'Email not found. Please register.'
     });
     //res.status(403).send('Email not found. Please register.');
@@ -374,7 +332,6 @@ app.post('/login', (req, res) => {
 
 // LOGOUT AND CLEAN COOKIE
 app.post('/logout', (req, res) => {
-  //res.clearCookie('user_id');
   req.session = null;
   res.redirect("/");
 });
@@ -383,7 +340,5 @@ app.post('/logout', (req, res) => {
 app.listen(port, () => {
   console.log(`Giovani's TinyApp listening on port ${port}!`);
 });
-
-//console.log(funcs.urlsForUser('sd1Ev1',urlDatabase));
 
 

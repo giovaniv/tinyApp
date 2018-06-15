@@ -17,13 +17,13 @@
     </thead>
     <tbody>
 
-  <% for (item in urls) { %>
+  <% for (let url in urls) { %>
 
     <% num++; %>
     <tr>
       <th scope="row"><%=num%></th>
-      <td><%= item %></td>
-      <td><%= urls[item].longURL %></td>
+      <td><a href="<%= urls[item].longURL %>" target="_blank"><%= url %></a></td>
+      <td><%= urls[url].longURL %></td>
       <td>
         <div class=row>
         <div class="col-sm-2"><form method=get action="/urls/<%= item %>"><input type=submit value=edit class="btn-info"></form></div>
