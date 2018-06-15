@@ -2,7 +2,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const funcs = require('./functions');
-const cookieParser = require('cookie-parser')
+//const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session')
+const bcrypt = require('bcryptjs');
 
 // STARTING THE APP
 const app = express();
@@ -12,7 +14,12 @@ app.set('view engine', 'ejs');
 
 // MIDDLEWARES (PLUG-INS)
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
+//app.use(cookieParser());
+
+app.use(cookieSession({
+  name: 'user_id',
+  keys: ['key1', 'key2']
+}))
 
 // FAKES DATABASES
 
@@ -60,7 +67,9 @@ app.get("/", (req, res) => {
 // URLs list
 app.get("/urls", (req, res) => {
 
-  let userID = req.cookies.user_id;
+  //let userID = req.cookies.user_id;
+  let userID = req.session.user_id;
+
   let urlsList = funcs.urlsForUser(userID,urlDatabase);
 
   let templateVars = {
@@ -85,7 +94,8 @@ app.get('/users.json', (req,res) => {
 // Form to create a new shortlink based on a longLink
 app.get("/urls/new", (req, res) => {
 
-  let userID = req.cookies.user_id;
+  //let userID = req.cookies.user_id;
+  let userID = req.session.user_id;
 
   if (!userID) {
     res.render('login');
@@ -100,7 +110,9 @@ app.get("/urls/new", (req, res) => {
 // Form to Edit or View a URL that was created
 app.get("/urls/:id", (req, res) => {
 
-  let userID = req.cookies.user_id;
+  //let userID = req.cookies.user_id;
+  let userID = req.session.user_id;
+
   let shortURL = req.params.id;
 
   // we check if the user is loggedIn
@@ -137,7 +149,10 @@ app.get("/u/:shortURL", (req, res) => {
 
 // Register new User page
 app.get("/register", (req, res) => {
-  let userID = req.cookies.user_id;
+
+  //let userID = req.cookies.user_id;
+  let userID = req.session.user_id;
+
   let templateVars = { user: userDatabase[userID] };
   res.render('register', templateVars);
 });
@@ -153,7 +168,8 @@ app.get("/login", (req, res) => {
 // List of all URLs
 app.get("/list", (req, res) => {
 
-  let userID = req.cookies.user_id;
+  //let userID = req.cookies.user_id;
+  let userID = req.session.user_id;
 
   let templateVars = {
     user: userDatabase[userID],
@@ -172,7 +188,10 @@ app.get("/list", (req, res) => {
 app.post('/urls', (req, res) => {
 
   let error;
-  let userID = req.cookies.user_id;
+
+  //let userID = req.cookies.user_id;
+  let userID = req.session.user_id;
+
   let shortLink = funcs.generateRandomString(6);
 
   if (req.body.longURL) {
@@ -197,7 +216,9 @@ app.post('/urls', (req, res) => {
 app.post('/urls/:id/delete', (req, res) => {
 
   let id = req.params.id;
-  let userID = req.cookies.user_id;
+
+  //let userID = req.cookies.user_id;
+  let userID = req.session.user_id;
 
   // we check if the user is loggedIn
   if (userID) {
@@ -226,7 +247,9 @@ app.post('/urls/:id', (req, res) => {
   let error;
   let id = req.params.id.toString();
   let longURL = req.body.longURL;
-  let userID = req.cookies.user_id;
+
+  //let userID = req.cookies.user_id;
+  let userID = req.session.user_id;
 
   // if the user isn't the owner of this short link
   // we redirect to the list of short links
@@ -256,10 +279,7 @@ app.post('/register', (req, res) => {
   let userID = funcs.generateRandomString(6);
   let email = req.body.email;
   let password = req.body.password;
-
-  const bcrypt = require('bcrypt');
-  const passUsed = password;
-  const hashed = bcrypt.hashSync(passUsed, 10);
+  const hashed = bcrypt.hashSync(password, 10);
 
   let checkEmail;
 
@@ -291,7 +311,10 @@ app.post('/register', (req, res) => {
       email: email,
       password: hashed  //encripted password
     };
-    res.cookie('user_id', userID.toString());
+
+    //res.cookie('user_id', userID.toString());
+    req.session.user_id = userID.toString();
+
     res.redirect("/");
   }
 
@@ -316,14 +339,13 @@ app.post('/login', (req, res) => {
   // we check if the username already exists
   checkID = funcs.checkData(userDatabase, 'email', email);
 
-  console.log(checkID.password);
-  console.log(password);
-  console.log(hashed);
-
   // if we have this email in database
   if (checkID) {
 
-    if (password !== checkID.password) {
+    // we check the hashed password with the parameter password
+    let checkPassword = bcrypt.compareSync(password, checkID.password);
+
+    if (!checkPassword) {
       res.status(403);
       res.render('login', {
         //user: userDatabase[userID],
@@ -332,7 +354,8 @@ app.post('/login', (req, res) => {
       //res.status(403).send('Wrong password. Please try again.');
     }
     else {
-      res.cookie('user_id', checkID.id);
+      //res.cookie('user_id', checkID.id);
+      req.session.user_id = checkID.id;
       res.redirect("/");
     }
 
@@ -351,7 +374,8 @@ app.post('/login', (req, res) => {
 
 // LOGOUT AND CLEAN COOKIE
 app.post('/logout', (req, res) => {
-  res.clearCookie('user_id');
+  //res.clearCookie('user_id');
+  req.session = null;
   res.redirect("/");
 });
 
